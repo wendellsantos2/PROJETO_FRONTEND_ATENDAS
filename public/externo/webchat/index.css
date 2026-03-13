@@ -1,0 +1,37 @@
+#webchat-atendas {
+    border: none;
+    position: fixed;
+    max-width: 100dvw;
+    max-height: 100dvh;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transition: all 0.5s ease-out;
+    z-index: 9999;
+}
+
+#webchat-atendas.loading {
+    transform: translate3d(0, calc(100% + 1rem), 0);
+}
+
+#webchat-atendas:is(.mounted, .minimize, .loading) {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+#webchat-atendas.expand {
+    width: 100%;
+    height: 80dvh;
+    bottom: 0;
+    right: 0;
+    border-radius: 1rem 1rem 0 0;
+}
+
+@media (min-width: 475px) {
+    #webchat-atendas.expand {
+        width: 23rem;
+        height: 35rem;
+        border-radius: 1rem 0 0 0;
+    }
+}

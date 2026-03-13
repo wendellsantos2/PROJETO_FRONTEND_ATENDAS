@@ -1,0 +1,55 @@
+name: Deploy Production (GCP)
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: Production
+
+        steps:
+          - name: Checkout Code
+            uses: actions/checkout@main
+    
+          - name: Setup Node.js
+            uses: actions/setup-node@main
+            with:
+                node-version-file: package.json
+    
+          - name: Install Dependencies
+            run: npm ci
+    
+          - name: Generate app
+            run: npm run generate
+            env:
+                NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+                NUXT_PUBLIC_BROADCAST_URL: ${{ secrets.NUXT_PUBLIC_BROADCAST_URL }}
+                NUXT_PUBLIC_BROADCAST_KEY: ${{ secrets.NUXT_PUBLIC_BROADCAST_KEY }}
+                NUXT_PUBLIC_BROADCAST_CLUSTER: ${{ secrets.NUXT_PUBLIC_BROADCAST_CLUSTER }}
+
+          - name: List contents of .output folder for verification
+            run: ls -l .output/
+
+          - name: Get version
+            id: version
+            run: |
+                VERSION=$(node -p "require('./package.json').version")
+                VERSION=$(echo "$VERSION" | sed 's/\./-/g')
+                echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+          - name: Google Cloud Auth
+            uses: google-github-actions/auth@main
+            with:
+                credentials_json: '${{ secrets.GCP_SA_KEY }}'
+                project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+          - name: Set up Cloud SDK
+            uses: google-github-actions/setup-gcloud@main
+
+          - name: Deploy to Google Cloud Storage
+            run: |
+                cd .output
+                gcloud app deploy app.yaml --quiet --version=${{ steps.version.outputs.VERSION }}

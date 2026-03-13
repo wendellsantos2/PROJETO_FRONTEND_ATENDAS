@@ -1,0 +1,28 @@
+body :is(.v-popper__popper) {
+    @apply !transition-[visibility_opacity] !duration-300;
+
+    &.v-popper__popper--hidden {
+        @apply opacity-0;
+    }
+    
+    &.v-popper__popper--shown {
+        @apply opacity-100;
+    }
+
+    & .v-popper__inner {
+        @apply bg-contrast text-background rounded-xl shadow text-sm;
+    }
+
+    & .v-popper__arrow-outer {
+        @apply border-background visible shadow-none;
+    }
+
+    & .v-popper__arrow-inner {
+        @apply border-contrast visible shadow-none;
+    }
+
+    & *::-webkit-scrollbar-thumb {
+        @apply bg-background/50;
+        scrollbar-color: theme(colors.background) initial;
+    }
+}

@@ -1,0 +1,56 @@
+:root {
+    --vf-node-bg: #fff;
+    --vf-node-text: #222;
+    --vf-connection-path: #b1b1b7;
+    --vf-handle: #555;
+}
+
+:is(body, body .vue-flow) {
+    & .vue-flow__node {
+        @apply text-center w-80 outline-none border-none rounded-2xl shadow-md *:p-4 transition-colors duration-300;
+        
+        * {
+            @apply placeholder:text-current placeholder:opacity-50;
+        }
+
+        &.selected {
+            @apply !bg-primary !text-white;
+        }
+
+        &.selected .vue-flow__handle {
+            @apply !border-white
+        }
+    }
+
+    & .vue-flow__handle {
+        @apply size-3 rounded-full border transition-colors duration-300;
+    }
+
+    & .vue-flow__handle-left {
+        @apply bg-primary;
+    }
+
+    & .vue-flow__handle-right {
+        @apply bg-success;
+    }
+
+    & :is(.vue-flow__edge-path, .vue-flow__connection-path) {
+        @apply stroke-contrast-300;
+    }
+
+    & :is(.vue-flow__edge.selected .vue-flow__edge-path, .vue-flow__edge:focus .vue-flow__edge-path, .vue-flow__edge:focus-visible .vue-flow__edge-path) {
+        @apply stroke-success;
+    }
+
+    & .vue-flow__controls {
+        @apply overflow-hidden rounded-lg divide-solid divide-y gap-1;
+
+        & button {
+            @apply bg-contrast-300 border-0 transition-all text-background duration-300 hover:bg-primary hover:text-white;
+        }
+
+        & svg {
+            @apply fill-current;
+        }
+    }
+}

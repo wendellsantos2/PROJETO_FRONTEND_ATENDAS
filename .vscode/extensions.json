@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "serhioromano.vscode-gitflow",
+        "antfu.iconify",
+        "cpylua.language-postcss",
+        "bradlc.vscode-tailwindcss",
+        "irongeek.vscode-env",
+        "christian-kohler.npm-intellisense",
+        "gruntfuggly.todo-tree"
+    ]
+}

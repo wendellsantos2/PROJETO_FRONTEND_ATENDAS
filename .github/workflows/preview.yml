@@ -1,0 +1,42 @@
+name: Deploy Preview (Cloudflare)
+
+on:
+    push:
+        branches:
+            - develop
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: Preview
+
+        steps:
+          - name: Checkout Code
+            uses: actions/checkout@main
+
+          - name: Setup Node.js
+            uses: actions/setup-node@main
+            with:
+                node-version-file: package.json
+
+          - name: Install Dependencies
+            run: npm ci
+
+          - name: Build app
+            run: npm run generate
+            env:
+                NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+                NUXT_PUBLIC_BROADCAST_URL: ${{ secrets.NUXT_PUBLIC_BROADCAST_URL }}
+                NUXT_PUBLIC_BROADCAST_KEY: ${{ secrets.NUXT_PUBLIC_BROADCAST_KEY }}
+                NUXT_PUBLIC_BROADCAST_CLUSTER: ${{ secrets.NUXT_PUBLIC_BROADCAST_CLUSTER }}
+
+          - name: Get repository name
+            id: repository
+            run: echo "NAME=${GITHUB_REPOSITORY#*/}" | sed 's/-.*//' >> "$GITHUB_OUTPUT"
+
+          - name: Deploy to Cloudflare
+            uses: cloudflare/wrangler-action@v3
+            with:
+                apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+                command: pages deploy dist --project-name=${{ steps.repository.outputs.NAME }} --commit-dirty=true

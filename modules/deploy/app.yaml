@@ -1,0 +1,13 @@
+runtime: python39
+entrypoint: gunicorn -b :$PORT main:app
+
+handlers:
+  - url: /(.*\.(<filesTypes>))$
+    static_files: <publicDir>/\1
+    upload: <publicDir>/(.*)
+    secure: always
+  
+  - url: /(.*)
+    static_files: <publicDir>/index.html
+    upload: <publicDir>/index.html
+    secure: always
